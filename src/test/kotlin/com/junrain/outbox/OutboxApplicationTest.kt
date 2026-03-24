@@ -1,0 +1,11 @@
+package com.junrain.outbox
+
+import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
+
+@SpringBootTest
+class OutboxApplicationTest {
+    @Test
+    fun contextLoads() {
+    }
+}
