@@ -72,7 +72,7 @@ class MockServiceTest {
         assertThat(event.eventType).isEqualTo(EventType.MOCK_CREATED)
         assertThat(event.status).isEqualTo(EventStatus.PENDING)
         assertThat(event.attemptCount).isEqualTo(0)
-        assertThat(event.processedAt).isNull()
+        assertThat(event.attemptedAt).isNull()
         assertThat(event.createdAt).isNotNull()
 
         val snapshot = objectMapper.readValue(event.payload, MockCreatedSnapshot::class.java)

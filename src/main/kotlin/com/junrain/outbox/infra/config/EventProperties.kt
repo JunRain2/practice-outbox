@@ -26,5 +26,5 @@ data class EventRetryStrategy(
 @ConfigurationProperties(prefix = "outbox.scheduler")
 data class EventSchedulerProperties(
     val intervalSeconds: Long = 60,
-    val leaseSeconds: Long = 30,
+    val recoveryTimeoutSeconds: Long = 30,
 )

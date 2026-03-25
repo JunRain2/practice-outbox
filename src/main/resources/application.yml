@@ -17,7 +17,7 @@ spring:
 outbox:
   scheduler:
     interval-seconds: 60
-    lease-seconds: 30
+    recovery-timeout-seconds: 30
   retry:
     default:
       max-count: 5

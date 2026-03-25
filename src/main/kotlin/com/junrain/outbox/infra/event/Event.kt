@@ -24,20 +24,18 @@ class Event(
         private set
     var nextAttemptAt: LocalDateTime? = null // 백오프 지수를 위한 다음 전송 시간
         private set
-    var processedAt: LocalDateTime? = null // 전송된 시각
+    var attemptedAt: LocalDateTime? = null // 시도한 시간
         private set
 
-    /**
-     * 이벤트 상태가 [PENDING]일 때만 가능합니다.
-     */
-    fun canProcess(): Boolean = this.status == EventStatus.PENDING
+    fun attempt() {
+        attemptCount++
+        attemptedAt = LocalDateTime.now()
+    }
 
     /**
      * 이벤트를 성공 처리합니다.
-     * 처리 시각이 현재 시각으로 기록됩니다.
      */
     fun success() {
-        processedAt = LocalDateTime.now()
         this.status = EventStatus.SUCCEEDED
     }
 
@@ -50,11 +48,11 @@ class Event(
         maxCount: Int,
         baseSeconds: Long,
     ) {
-        attemptCount++
         if (attemptCount >= maxCount) {
             this.status = EventStatus.FAILED
             return
         }
+        this.status = EventStatus.PENDING
         nextAttemptAt =
             LocalDateTime
                 .now()
@@ -73,6 +71,7 @@ enum class EventType {
 
 enum class EventStatus {
     PENDING,
+    PROGRESSING,
     SUCCEEDED,
     FAILED,
 }
