@@ -4,9 +4,11 @@ spring:
       ddl-auto: create-drop
 
 outbox:
+  lock-type: db
+  db-lock:
+    recovery-timeout-seconds: 30
   scheduler:
     interval-seconds: 60
-    recovery-timeout-seconds: 30
   retry:
     default:
       max-count: 5

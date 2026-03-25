@@ -2,6 +2,8 @@ package com.junrain.outbox.infra.event
 
 import com.junrain.outbox.application.mock.MockService
 import com.junrain.outbox.application.mock.command.ProcessMockEventCommand
+import com.junrain.outbox.domain.LockManager
+import com.junrain.outbox.infra.config.EventRetryProperties
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
@@ -16,6 +18,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
+import tools.jackson.databind.ObjectMapper
 import java.time.LocalDateTime
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.CyclicBarrier
@@ -26,11 +29,24 @@ class EventProcessorContractTest {
     @Autowired
     lateinit var eventRepository: EventRepository
 
+    @Autowired
+    lateinit var objectMapper: ObjectMapper
+
+    @Autowired
+    lateinit var lockManager: LockManager
+
+    @Autowired
+    lateinit var retryProperties: EventRetryProperties
+
     @MockitoSpyBean
     lateinit var mockService: MockService
 
-    @Autowired
-    lateinit var processors: List<EventProcessor>
+    private val processors: List<EventProcessor> by lazy {
+        listOf(
+            DbLockEventProcessor(eventRepository, mockService, objectMapper, retryProperties),
+            RedisLockEventProcessor(eventRepository, mockService, objectMapper, lockManager, retryProperties),
+        )
+    }
 
     private fun createPendingEvent(aggregateId: String = "1"): Event =
         eventRepository.save(

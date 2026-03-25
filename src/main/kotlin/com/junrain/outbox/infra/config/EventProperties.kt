@@ -26,5 +26,12 @@ data class EventRetryStrategy(
 @ConfigurationProperties(prefix = "outbox.scheduler")
 data class EventSchedulerProperties(
     val intervalSeconds: Long = 60,
+)
+
+/**
+ * DB Lock 전용 설정을 정의합니다.
+ */
+@ConfigurationProperties(prefix = "outbox.db-lock")
+data class DbLockProperties(
     val recoveryTimeoutSeconds: Long = 30,
 )

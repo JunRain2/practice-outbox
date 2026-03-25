@@ -4,11 +4,11 @@ import com.junrain.outbox.application.mock.MockService
 import com.junrain.outbox.application.mock.command.ProcessMockEventCommand
 import com.junrain.outbox.infra.config.EventRetryProperties
 import com.junrain.outbox.infra.event.mock.MockCreatedSnapshot
-import org.springframework.context.annotation.Primary
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import tools.jackson.databind.ObjectMapper
 
-@Primary
+@ConditionalOnProperty(name = ["outbox.lock-type"], havingValue = "db")
 @Component
 class DbLockEventProcessor(
     private val eventRepository: EventRepository,
